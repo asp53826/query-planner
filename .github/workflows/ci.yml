@@ -1,0 +1,26 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[dev]'
+      - name: Tests
+        run: python -m pytest -q
+      - name: Estimation error study
+        run: python bench/qerror.py --quick
+      - name: Plan optimality against a perfect-information oracle
+        run: python bench/optimality.py --quick
+      - name: Cost model against the clock
+        run: python bench/cost_vs_time.py --quick

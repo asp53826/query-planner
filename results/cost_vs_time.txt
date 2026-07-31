@@ -1,0 +1,20 @@
+Cost model fidelity: predicted cost against measured runtime.
+Costs use TRUE cardinalities, so this isolates the model from the estimator.
+
+star schema, 4 dimensions
+  queries                              15
+  plans costed and timed               360
+  Spearman rho, cost vs runtime        0.772   (worst query -0.044)
+  model's pick was the fastest plan    9/15
+  model's pick, mean percentile        12th
+  slowdown vs the fastest plan         1.11x geomean, 1.47x worst
+
+chain of many-to-many joins
+  queries                              15
+  plans costed and timed               75
+  Spearman rho, cost vs runtime        0.773   (worst query 0.100)
+  model's pick was the fastest plan    14/15
+  model's pick, mean percentile        2th
+  slowdown vs the fastest plan         1.00x geomean, 1.00x worst
+
+wrote results/cost_vs_time.json

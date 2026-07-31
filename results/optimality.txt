@@ -1,0 +1,37 @@
+Runtime relative to the plan chosen with perfect cardinalities.
+1.00 means the estimation error cost nothing. Higher is what it cost.
+
+star schema, 4 dimensions, uncorrelated  (25 queries, 4 tables)
+  plan chosen by                       geomean   median      p90    worst
+  -----------------------------------------------------------------------
+  DP + estimated cardinalities            1.00     1.00     1.03     1.06
+  left-deep DP + estimates                2.15     2.36     2.81     3.30
+  greedy + estimates                      1.35     1.26     1.72     2.04
+  [noise floor: oracle vs itself]         1.00     1.00     1.04     1.08
+
+  identical to the oracle plan:   22/25
+  DP found the global optimum:    25/25  (checked against exhaustive enumeration)
+
+star schema, 4 dimensions, correlated predicates  (25 queries, 4 tables)
+  plan chosen by                       geomean   median      p90    worst
+  -----------------------------------------------------------------------
+  DP + estimated cardinalities            0.99     1.00     1.02     1.07
+  left-deep DP + estimates                2.10     2.11     3.09     3.32
+  greedy + estimates                      1.39     1.34     1.84     1.97
+  [noise floor: oracle vs itself]         1.00     1.00     1.04     1.11
+
+  identical to the oracle plan:   20/25
+  DP found the global optimum:    25/25  (checked against exhaustive enumeration)
+
+chain of many-to-many joins  (25 queries, 4 tables)
+  plan chosen by                       geomean   median      p90    worst
+  -----------------------------------------------------------------------
+  DP + estimated cardinalities            1.00     1.00     1.03     1.11
+  left-deep DP + estimates                1.07     1.08     1.12     1.14
+  greedy + estimates                      1.01     1.02     1.06     1.10
+  [noise floor: oracle vs itself]         0.99     1.00     1.02     1.06
+
+  identical to the oracle plan:   25/25
+  DP found the global optimum:    25/25  (checked against exhaustive enumeration)
+
+wrote results/optimality.json

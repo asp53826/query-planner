@@ -1,0 +1,26 @@
+[
+  {
+    "name": "star schema, 4 dimensions",
+    "queries": 15,
+    "plans_scored": 360,
+    "plans_sampled_away": 0,
+    "spearman_mean": 0.7716883308978766,
+    "spearman_min": -0.04434782608695652,
+    "pick_percentile_mean": 0.11594202898550725,
+    "pick_penalty_geomean": 1.1087580076411017,
+    "pick_penalty_max": 1.4679606240705219,
+    "pick_was_fastest": 9
+  },
+  {
+    "name": "chain of many-to-many joins",
+    "queries": 15,
+    "plans_scored": 75,
+    "plans_sampled_away": 0,
+    "spearman_mean": 0.7733333333333333,
+    "spearman_min": 0.1,
+    "pick_percentile_mean": 0.016666666666666666,
+    "pick_penalty_geomean": 1.0000538270632722,
+    "pick_penalty_max": 1.0008077102420927,
+    "pick_was_fastest": 14
+  }
+]

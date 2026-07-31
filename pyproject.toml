@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "query-planner"
+version = "0.1.0"
+description = "Join ordering, a cost model, and cardinality estimation measured by q-error and by the clock"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = ["numpy>=1.26"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools]
+packages = ["qp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
