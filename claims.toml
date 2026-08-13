@@ -1,0 +1,118 @@
+# Claims this repository publishes, re-checked by Claim Auditor.
+#
+# Every entry binds a sentence in the README to the command that produces its
+# number. If the sentence is edited away, or the number stops reproducing, the
+# audit fails and opens one tracked issue.
+#
+# Two scope notes, both of which the README already argues for itself.
+#
+# 1. No runtime ratio is audited. The README's closing section says it outright:
+#    "One machine, one clock. Every runtime here is a single-threaded numpy
+#    process on an M2 Pro." That is measurably true. On a shared runner the
+#    left-deep penalty does not merely shrink, it inverts -- 0.82 against the
+#    published 2.15 -- because plan shape trades against cache behaviour that
+#    differs per machine. An auditor that flagged that would be reporting the
+#    runner, not the planner. The same applies to Spearman rho, which is
+#    computed from those timings.
+#
+# 2. Tolerances here are percentages, not zero. These are float statistics over
+#    sampled data, and they move by one to three percent across numpy versions
+#    while the underlying result is unchanged. Contrast cdcl-sat, whose claims
+#    are integer counts from a seeded search and are audited at tolerance = 0.
+#    The bands below are wide enough to absorb that drift and far too tight to
+#    absorb an estimator regression.
+
+[[claim]]
+id = "test-count"
+statement = ".venv/bin/python -m pytest -q"
+command = "python -m pytest -q"
+pattern = "([0-9]+) passed"
+expected = 63
+tolerance = 0
+
+# The headline: estimates wrong by up to 76x.
+[[claim]]
+id = "worst-case-q-error"
+statement = "The estimates are wrong by up to 76x."
+command = "python bench/qerror.py --json /tmp/qp-qerror.json > /dev/null && cat /tmp/qp-qerror.json"
+json_path = "correlation.5.max"
+min = 70.0
+max = 80.0
+timeout = 1800
+
+[[claim]]
+id = "correlated-predicate-geomean"
+statement = "| 1.00 | **2.49** | 1.66 | **14.74** | **75.9** |"
+command = "python bench/qerror.py --json /tmp/qp-qerror.json > /dev/null && cat /tmp/qp-qerror.json"
+json_path = "correlation.5.geomean"
+expected = 2.49
+tolerance_pct = 3
+timeout = 1800
+
+# The control: key joins do not compound.
+[[claim]]
+id = "star-schema-does-not-compound"
+statement = "| 4 | 50,010 | 52,357 | **1.09** | 1.23 | 1.4 |"
+command = "python bench/qerror.py --json /tmp/qp-qerror.json > /dev/null && cat /tmp/qp-qerror.json"
+json_path = "depth.star.4.geomean"
+expected = 1.09
+tolerance_pct = 3
+timeout = 1800
+
+# The finding: non-key joins do.
+[[claim]]
+id = "many-to-many-joins-compound"
+statement = "| 3 | 2,891,066 | 51,290,956 | **17.81** | 21.82 | 25.0 |"
+command = "python bench/qerror.py --json /tmp/qp-qerror.json > /dev/null && cat /tmp/qp-qerror.json"
+json_path = "depth.mesh.3.geomean"
+expected = 17.81
+tolerance_pct = 3
+timeout = 1800
+
+[[claim]]
+id = "many-to-many-true-cardinality"
+statement = "| 3 | 2,891,066 | 51,290,956 | **17.81** | 21.82 | 25.0 |"
+command = "python bench/qerror.py --json /tmp/qp-qerror.json > /dev/null && cat /tmp/qp-qerror.json"
+json_path = "depth.mesh.3.mean_act"
+expected = 51290956
+tolerance_pct = 0.5
+timeout = 1800
+
+[[claim]]
+id = "mcv-list-absorbs-skew"
+statement = "geomean 1.02 at Zipf 0.0 rising only to 1.21 at Zipf 1.2"
+command = "python bench/qerror.py --json /tmp/qp-qerror.json > /dev/null && cat /tmp/qp-qerror.json"
+json_path = "skew.3.geomean"
+expected = 1.21
+tolerance_pct = 3
+timeout = 1800
+
+# Plan search correctness: no clock involved, so these are exact. DP is checked
+# against exhaustive enumeration in all three workloads.
+
+[[claim]]
+id = "dp-finds-the-optimum-uncorrelated"
+statement = "| DP found the global optimum | 25/25 | 25/25 | 25/25 |"
+command = "python bench/optimality.py --json /tmp/qp-optimality.json"
+pattern = "uncorrelated[\\s\\S]*?DP found the global optimum:\\s+([0-9]+)/25"
+expected = 25
+tolerance = 0
+timeout = 1800
+
+[[claim]]
+id = "dp-finds-the-optimum-correlated"
+statement = "| DP found the global optimum | 25/25 | 25/25 | 25/25 |"
+command = "python bench/optimality.py --json /tmp/qp-optimality.json"
+pattern = "correlated predicates[\\s\\S]*?DP found the global optimum:\\s+([0-9]+)/25"
+expected = 25
+tolerance = 0
+timeout = 1800
+
+[[claim]]
+id = "dp-finds-the-optimum-many-to-many"
+statement = "| DP found the global optimum | 25/25 | 25/25 | 25/25 |"
+command = "python bench/optimality.py --json /tmp/qp-optimality.json"
+pattern = "chain of many-to-many joins[\\s\\S]*?DP found the global optimum:\\s+([0-9]+)/25"
+expected = 25
+tolerance = 0
+timeout = 1800
