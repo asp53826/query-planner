@@ -39,7 +39,7 @@ jobs:
     permissions:
       contents: read
       issues: write
-    uses: asp53826/portfolio-ops/.github/workflows/claim-auditor.yml@v1.3.0
+    uses: asp53826/portfolio-ops/.github/workflows/claim-auditor.yml@v1.4.0
     with:
       runtime: python
       runtime-version: "3.12"
