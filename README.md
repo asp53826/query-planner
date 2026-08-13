@@ -143,6 +143,13 @@ python3 -m venv .venv && .venv/bin/pip install -e '.[dev]'
 
 Raw output for all three is in [`results/`](results).
 
+[`claims.toml`](claims.toml) binds ten of the numbers above to the commands that
+produce them, and Claim Auditor re-runs those commands weekly. The estimation
+statistics and the plan-search results are audited; no runtime ratio is, for the
+reason given in the last section of this README — those are one machine and one
+clock, and on a different machine the left-deep penalty inverts rather than
+merely shrinking.
+
 ## The rule that makes it honest
 
 **An estimate may only use what `ANALYZE` could have computed.** Per-column
