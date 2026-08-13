@@ -34,6 +34,19 @@ jobs:
       verification-command: >-
         python bench/qerror.py --quick
 
+  claim-auditor:
+    if: github.event_name != 'pull_request_target' && github.event.schedule != '31 7 1 * *'
+    permissions:
+      contents: read
+      issues: write
+    uses: asp53826/portfolio-ops/.github/workflows/claim-auditor.yml@7a0d4bf3b17973f9cdad397f0a66740f16737e18
+    with:
+      runtime: python
+      runtime-version: "3.12"
+      install-command: >-
+        python -m pip install -e '.[dev]'
+      timeout-minutes: 60
+
   documentation-scribe:
     if: github.event_name != 'pull_request_target' && github.event.schedule != '31 7 1 * *'
     permissions:
